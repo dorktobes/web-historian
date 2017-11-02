@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var htmlFetcher = require('../workers/htmlfetcher.js');
+htmlFetcher = htmlFetcher.htmlFetcher;
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -63,4 +65,32 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urls) {
+  _.each(urls, url => {
+    console.log('heres the url breh', url);
+    exports.isUrlArchived(url, function(exists) {
+      if (!exists) {
+       //download it
+        htmlFetcher(url);
+      }
+    });
+  // urls.forEach(function(url) {
+  //   });  
+  });
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 };
