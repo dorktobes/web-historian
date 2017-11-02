@@ -38,13 +38,34 @@ exports.handleRequest = function (req, res) {
       router[req.url](res);
       
     } else {
+      res.writeHead(404, utils.headers);
+      res.end();
       //404
     }
+  } else if (req.method === 'POST') {
+    //look for url in list, if url is in list, display page, if not, send 'working' screen.
+    //get urlQuery
+    var urlQuery;
+    var chunks = '';
+    req.on('data', function (chunk) {
+      //collect chunks
+      chunks += chunk;
+    }).on('end', function () {
+      //do something with chunks
+      urlQuery = chunks.split('=')[1];
+      console.log(urlQuery);
+      // archive.readListOfUrls(archive.isUrlInList(urlQuery, ))
+    });
+    
+    
+    
+    
+    
   } else {
     res.end(archive.paths.list);
     
   }
-  //.  /something/domain?q='myquery'
+
 
 
 };
