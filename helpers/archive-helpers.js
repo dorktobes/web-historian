@@ -26,7 +26,6 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
-  //goes over every url in archives/sites.txt
   fs.readFile(exports.paths.list, function(err, data) {
     if (err) {
       throw err;
@@ -36,27 +35,31 @@ exports.readListOfUrls = function(callback) {
       callback(dataArr);
     }
   });
-  //callback's every url in archives/sites.txt
-  //pass in isUrlInList as callback
 };
 
 exports.isUrlInList = function(url, callback) {
-  //set switch variable to false
   var contains = false;
-  
   exports.readListOfUrls(function(arr) {
     contains = arr.indexOf(url) >= 0;
     callback(contains);
   });
-  // check if input url is in readListOfUrls
-    // if yes, pass in url to callback, set switch to true
-    // return switch 
+
 };
 
 exports.addUrlToList = function(url, callback) {
+  fs.appendFile(exports.paths.list, url, function(err) {
+    if (err) {
+      throw err;
+    } else {
+      callback();
+    }
+  });
 };
 
 exports.isUrlArchived = function(url, callback) {
+  fs.access(exports.paths.archivedSites + '/' + url, function(err) { 
+    callback(!err);
+  });
 };
 
 exports.downloadUrls = function(urls) {
