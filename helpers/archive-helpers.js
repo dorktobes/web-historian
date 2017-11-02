@@ -42,6 +42,12 @@ exports.readListOfUrls = function(callback) {
 
 exports.isUrlInList = function(url, callback) {
   //set switch variable to false
+  var contains = false;
+  
+  exports.readListOfUrls(function(arr) {
+    contains = arr.indexOf(url) >= 0;
+    callback(contains);
+  });
   // check if input url is in readListOfUrls
     // if yes, pass in url to callback, set switch to true
     // return switch 
