@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var https = require('https');
+var http = require('http');
 var htmlFetcher = require('../workers/htmlfetcher.js');
 htmlFetcher = htmlFetcher.htmlFetcher;
 
@@ -49,6 +51,7 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
+  url = String(url) + '\n';
   fs.appendFile(exports.paths.list, url, function(err) {
     if (err) {
       throw err;
@@ -66,11 +69,24 @@ exports.isUrlArchived = function(url, callback) {
 
 exports.downloadUrls = function(urls) {
   _.each(urls, url => {
-    console.log('heres the url breh', url);
     exports.isUrlArchived(url, function(exists) {
       if (!exists) {
        //download it
-        htmlFetcher(url);
+        https.get(`https://${url}`, function(resp) {
+          let data = '';
+          resp.on('data', (chunk) => {
+            data += chunk;
+          }).on('end', () => {
+            fs.writeFile(exports.paths.archivedSites + '/' + url, data, function(err) {
+              if (err) {
+                throw err;
+              } else {
+                console.log('Wrote ' + url + ' to ' + exports.paths.archivedSites);
+              }
+            });
+          });
+          
+        });
       }
     });
   // urls.forEach(function(url) {
